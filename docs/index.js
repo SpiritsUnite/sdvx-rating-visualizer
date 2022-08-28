@@ -151,7 +151,6 @@ function draw_visualizer(minLvl, maxLvl) {
                 block.style.top = `${(maxVf - bound[1] * 50) * 100 / maxVf}%`;
                 block.style.height = `${(bound[1] - bound[0]) * 5000 / maxVf}%`;
                 block.addEventListener("mousemove", event => {
-                    event.stopPropagation();
                     const gradeBound = GRADE_SCORE[g];
                     let score = gradeBound[1] -
                         (gradeBound[1] - gradeBound[0]) * event.offsetY / block.clientHeight;
