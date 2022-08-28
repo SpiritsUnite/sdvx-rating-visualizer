@@ -70,10 +70,6 @@ function draw_rows(maxVf: number): Element {
         label.innerText = r.toFixed(2);
         row.appendChild(label);
 
-        const line = document.createElement("div");
-        line.classList.add("line");
-        row.appendChild(line);
-
         rows.appendChild(row);
     }
     return rows;
