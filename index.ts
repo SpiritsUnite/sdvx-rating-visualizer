@@ -44,7 +44,7 @@ const MIN_LVL = 10;
 const MAX_LVL = 20;
 const VF_INTERVAL = 0.25;
 
-const visualizer = document.querySelector(".visualizer");
+const visualizer = document.querySelector(".visualizer") as HTMLDivElement;
 
 function draw_cols(minLvl: number, maxLvl: number): Element {
     const headers = visualizer.querySelector(".headers");
@@ -76,7 +76,7 @@ function draw_rows(maxVf: number): Element {
 }
 
 let boxes_events = false;
-function init_boxes(): Element {
+function init_boxes(): HTMLDivElement {
     const boxes = visualizer.querySelector(".boxes") as HTMLDivElement;
     const boxScrollTop = parseInt(localStorage.getItem("boxScrollTop"));
     const boxScrollLeft = parseInt(localStorage.getItem("boxScrollLeft"));
@@ -152,6 +152,31 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
     const boxes = init_boxes();
 
     boxes.innerHTML = "";
+    const indicator = document.createElement("div");
+    indicator.classList.add("indicator");
+    indicator.hidden = true;
+    boxes.parentElement.appendChild(indicator);
+
+    const rowIndicator = document.createElement("div");
+    rowIndicator.classList.add("indicator");
+    rowIndicator.hidden = true;
+    const rowIndicatorScore = document.createElement("div")
+    rowIndicatorScore.classList.add("block-score-text");
+    rowIndicatorScore.style.position = "absolute";
+    rowIndicatorScore.style.bottom = "0px";
+    //rowIndicator.appendChild(rowIndicatorScore);
+    //rows.appendChild(rowIndicator);
+
+    let tooltipLeft = true;
+    visualizer.addEventListener("mousemove", event => {
+        const middleOffset = event.clientX - document.documentElement.clientWidth / 2;
+        if (middleOffset < -visualizer.clientWidth / 4) {
+            tooltipLeft = true;
+        } else if (middleOffset > visualizer.clientWidth / 4) {
+            tooltipLeft = false;
+        }
+    });
+    
     for (let lv = minLvl; lv <= maxLvl; lv++) {
         const boxCol = document.createElement("div");
         boxCol.classList.add("box-col-parent")
@@ -167,17 +192,48 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
                 block.classList.add("block");
                 let bound = bounds[lv][m][g];
                 block.innerText = g;
-                block.style.top = `${(maxVf - bound[1]*50) * 100/maxVf}%`;
-                block.style.height = `${(bound[1] - bound[0]) * 5000/maxVf}%`;
+                block.style.top = `${Math.round((maxVf - bound[1]*50)/maxVf * boxes.clientHeight)}px`;
+                block.style.height = `${Math.round((bound[1] - bound[0]) * 50/maxVf * boxes.clientHeight)}px`;
+
+                let blockScore = document.createElement("div");
+                blockScore.classList.add("block-score");
+                blockScore.hidden = true;
+                let blockScoreText = document.createElement("span");
+                blockScoreText.classList.add("block-score-text");
+                blockScore.appendChild(blockScoreText);
+                block.appendChild(blockScore);
+
                 block.addEventListener("mousemove", event => {
+                    if (event.offsetY < 0 || event.offsetY > block.clientHeight) {
+                        // Sometimes Chrome gives offsetY = -1
+                        indicator.hidden = true;
+                        blockScore.hidden = true;
+                        return;
+                    }
                     const gradeBound = GRADE_SCORE[g];
                     let score = gradeBound[1] -
-                        (gradeBound[1] - gradeBound[0])*event.offsetY/block.clientHeight;
+                        (gradeBound[1] - gradeBound[0])*(event.offsetY+1)/block.clientHeight;
                     let vf = lv * score * GRADE_MULT[g] * MEDAL_MULT[m] * 2;
                     score = score*100000;
                     vf = vf*50/10000;
-                    console.log(score.toFixed(0), vf.toFixed(2));
-                    block.title = `${score.toFixed(0)} ${vf.toFixed(2)}`
+                    
+                    indicator.style.top = `${event.offsetY + block.offsetTop + boxes.offsetTop - 1}px`;
+                    indicator.hidden = false;
+
+                    blockScoreText.textContent = `${(score/1000).toFixed(0)}k ${vf.toFixed(2)}`;
+                    blockScore.style.bottom = `${block.clientHeight - event.offsetY + 10}px`;
+                    if (tooltipLeft) {
+                        blockScore.style.left = `${event.offsetX + 2}px`
+                        blockScore.style.right = "";
+                    } else {
+                        blockScore.style.left = "";
+                        blockScore.style.right = `${block.clientWidth - event.offsetX + 2}px`;
+                    }
+                    blockScore.hidden = false;
+                });
+                block.addEventListener("mouseout", event => {
+                    indicator.hidden = true;
+                    blockScore.hidden = true;
                 });
 
                 boxCol2.appendChild(block);
@@ -191,9 +247,38 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
             let bound = bounds[lv]["PUC"]["S"];
             block.style.top = `${(maxVf - bound[1] * 50) * 100 / maxVf}%`;
             block.innerText = "PUC";
+
+            let pucSpacer = document.createElement("div");
+            pucSpacer.classList.add("puc-spacer");
+            block.appendChild(pucSpacer);
+
+            let blockScore = document.createElement("div");
+            blockScore.classList.add("block-score");
+            blockScore.hidden = true;
+            let blockScoreText = document.createElement("span");
+            blockScoreText.classList.add("block-score-text");
+            blockScore.appendChild(blockScoreText);
+            block.appendChild(blockScore);
+
             block.addEventListener("mousemove", event => {
                 let vf = bound[1] * 50;
-                block.title = `${vf.toFixed(2)}`
+                indicator.style.top = `${block.offsetTop + boxes.offsetTop}px`;
+                indicator.hidden = false;
+
+                blockScoreText.textContent = `${vf.toFixed(2)}`;
+                blockScore.style.bottom = `calc(${block.clientHeight}px + 1.1em)`;
+                if (tooltipLeft) {
+                    blockScore.style.left = `${event.offsetX + 2}px`
+                    blockScore.style.right = "";
+                } else {
+                    blockScore.style.left = "";
+                    blockScore.style.right = `${block.clientWidth - event.offsetX + 2}px`;
+                }
+                blockScore.hidden = false;
+            });
+            block.addEventListener("mouseout", event => {
+                indicator.hidden = true;
+                blockScore.hidden = true;
             });
             boxCol.appendChild(block);
         }
