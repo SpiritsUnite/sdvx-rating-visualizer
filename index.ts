@@ -167,16 +167,7 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
     //rowIndicator.appendChild(rowIndicatorScore);
     //rows.appendChild(rowIndicator);
 
-    let tooltipLeft = true;
-    visualizer.addEventListener("mousemove", event => {
-        const middleOffset = event.clientX - document.documentElement.clientWidth / 2;
-        if (middleOffset < -visualizer.clientWidth / 4) {
-            tooltipLeft = true;
-        } else if (middleOffset > visualizer.clientWidth / 4) {
-            tooltipLeft = false;
-        }
-    });
-    
+    let tooltipRight = true;
     for (let lv = minLvl; lv <= maxLvl; lv++) {
         const boxCol = document.createElement("div");
         boxCol.classList.add("box-col-parent")
@@ -222,7 +213,13 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
 
                     blockScoreText.textContent = `${(score/1000).toFixed(0)}k ${vf.toFixed(2)}`;
                     blockScore.style.bottom = `${block.clientHeight - event.offsetY + 10}px`;
-                    if (tooltipLeft) {
+                    if (event.clientX > visualizer.getBoundingClientRect().left + visualizer.clientWidth - blockScore.clientWidth - 4) {
+                        tooltipRight = false;
+                    }
+                    if (event.clientX < visualizer.getBoundingClientRect().left + rows.clientWidth + blockScore.clientWidth + 4) {
+                        tooltipRight = true;
+                    }
+                    if (tooltipRight) {
                         blockScore.style.left = `${event.offsetX + 2}px`
                         blockScore.style.right = "";
                     } else {
@@ -267,7 +264,13 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
 
                 blockScoreText.textContent = `${vf.toFixed(2)}`;
                 blockScore.style.bottom = `calc(${block.clientHeight}px + 1.1em)`;
-                if (tooltipLeft) {
+                if (event.clientX > visualizer.getBoundingClientRect().left + visualizer.clientWidth - blockScore.clientWidth - 4) {
+                    tooltipRight = false;
+                }
+                if (event.clientX < visualizer.getBoundingClientRect().left + rows.clientWidth + blockScore.clientWidth + 4) {
+                    tooltipRight = true;
+                }
+                if (tooltipRight) {
                     blockScore.style.left = `${event.offsetX + 2}px`
                     blockScore.style.right = "";
                 } else {
