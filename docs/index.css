@@ -182,7 +182,7 @@ body {
     position: absolute;
     height: 1.5em;
     width: 100%;
-    top: -0.75em;
+    transform: translateY(-50%);
 }
 
 .block-score {
@@ -241,12 +241,17 @@ body {
 .indicator.fixed {
     border-color: red;
     color: red;
-    pointer-events: all;
     cursor: pointer;
 }
 
 .indicator.fixed .indicator-dot {
     background-color: red;
+    pointer-events: all;
+}
+
+.indicator.fixed .indicator-text {
+    color: red;
+    pointer-events: all;
 }
 
 .indicator.fixed:hover {
@@ -258,6 +263,6 @@ body {
     background-color: lightcoral;
 }
 
-.indicator.fixed:hover ~ .boxes {
-    display: none;
+.indicator.fixed:hover .indicator-text {
+    color: lightcoral;
 }

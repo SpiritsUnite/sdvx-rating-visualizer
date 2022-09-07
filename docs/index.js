@@ -222,9 +222,11 @@ function draw_visualizer(minLvl, maxLvl) {
                     }
                     const spacer = document.createElement("div");
                     spacer.classList.add("puc-spacer");
+                    spacer.style.width = "1.5em";
+                    spacer.style.left = "-0.75em";
                     const indicatorFixed = indicator.cloneNode(true);
                     indicatorFixed.classList.add("fixed");
-                    indicatorFixed.appendChild(spacer);
+                    indicatorFixed.querySelector(".indicator-dot").appendChild(spacer);
                     indicator.parentElement.appendChild(indicatorFixed);
                     indicatorFixed.addEventListener("click", () => {
                         indicatorFixed.remove();
