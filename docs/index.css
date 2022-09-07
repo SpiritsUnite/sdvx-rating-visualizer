@@ -213,7 +213,7 @@ body {
     color: darkslategrey;
     position: absolute;
     width: 100%;
-    z-index: 5;
+    z-index: 6;
     pointer-events: none;
     transform: translateY(-50%);
 }
@@ -239,6 +239,7 @@ body {
 }
 
 .indicator.fixed {
+    z-index: 5;
     border-color: red;
     color: red;
     cursor: pointer;
