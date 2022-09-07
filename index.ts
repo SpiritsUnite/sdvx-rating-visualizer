@@ -331,6 +331,11 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
             });
             boxCol.appendChild(block);
         }
+        boxes.addEventListener("dblclick", () => {
+            for (let e of document.querySelectorAll(".fixed")) {
+                e.remove();
+            }
+        });
         boxes.appendChild(boxCol);
     }
 }
