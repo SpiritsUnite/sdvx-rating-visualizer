@@ -84,12 +84,18 @@ function init_boxes() {
     }
     {
         let ticking = false;
+        let movementX = 0;
+        let movementY = 0;
         const onMouseMove = (event) => {
+            movementX += event.movementX;
+            movementY += event.movementY;
             if (!ticking) {
                 ticking = true;
                 window.requestAnimationFrame(() => {
-                    visualizer.scrollBy(-event.movementX, -event.movementY);
+                    visualizer.scrollBy(-movementX, -movementY);
                     ticking = false;
+                    movementX = 0;
+                    movementY = 0;
                 });
             }
         };
