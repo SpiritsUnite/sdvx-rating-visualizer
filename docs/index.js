@@ -142,6 +142,9 @@ function draw_visualizer(minLvl, maxLvl) {
     const indicator = document.createElement("div");
     indicator.classList.add("indicator");
     indicator.hidden = true;
+    const indicatorDot = document.createElement("div");
+    indicatorDot.classList.add("indicator-dot");
+    indicator.appendChild(indicatorDot);
     boxes.parentElement.appendChild(indicator);
     const rowIndicator = document.createElement("div");
     rowIndicator.classList.add("indicator");
@@ -190,7 +193,9 @@ function draw_visualizer(minLvl, maxLvl) {
                     let vf = lv * score * GRADE_MULT[g] * MEDAL_MULT[m] * 2;
                     score = score * 100000;
                     vf = vf * 50 / 10000;
-                    indicator.style.top = `${event.offsetY + block.offsetTop + boxes.offsetTop - 1}px`;
+                    const indicatorBound = indicator.parentElement.getBoundingClientRect();
+                    indicator.style.top = `${event.clientY - Math.round(indicatorBound.top)}px`;
+                    indicatorDot.style.left = `${event.clientX - Math.round(indicatorBound.left)}px`;
                     indicator.hidden = false;
                     blockScoreText.textContent = `${(score / 1000).toFixed(0)}k ${vf.toFixed(2)}`;
                     blockScore.style.bottom = `${block.clientHeight - event.offsetY + 10}px`;

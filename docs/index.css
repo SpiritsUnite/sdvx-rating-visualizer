@@ -205,8 +205,17 @@ body {
 .indicator {
     border-top: 2px solid darkslategrey;
     position: absolute;
-    top: 0px;
     width: 100%;
     z-index: 5;
     pointer-events: none;
+    transform: translateY(-1px);
+}
+
+.indicator-dot {
+    position: absolute;
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    background-color: darkslategray;
+    transform: translate(-50%, -4px);
 }
