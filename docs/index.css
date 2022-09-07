@@ -40,6 +40,7 @@ body {
     width: min-content;
     display: grid;
     grid-template: auto auto / auto auto;
+    user-select: none;
 }
 
 .corner {
@@ -134,7 +135,7 @@ body {
     text-align: center;
     background-color: lightskyblue;
     margin: 0px 2px;
-    cursor: crosshair;
+    cursor: pointer;
 }
 
 .COMP {
@@ -203,8 +204,13 @@ body {
     white-space: nowrap;
 }
 
+.fixed .block-score-text {
+    color: red;
+}
+
 .indicator {
     border-top: 2px solid darkslategrey;
+    color: darkslategrey;
     position: absolute;
     width: 100%;
     z-index: 5;
@@ -219,4 +225,39 @@ body {
     border-radius: 50%;
     background-color: darkslategray;
     transform: translate(-50%, -4px);
+}
+
+.indicator-text {
+    position: absolute;
+    bottom: 10px;
+
+    font-size: small;
+    background-color: white;
+    padding: 0px 3px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.indicator.fixed {
+    border-color: red;
+    color: red;
+    pointer-events: all;
+    cursor: pointer;
+}
+
+.indicator.fixed .indicator-dot {
+    background-color: red;
+}
+
+.indicator.fixed:hover {
+    border-color: lightcoral;
+    color: lightcoral;
+}
+
+.indicator.fixed:hover .indicator-dot {
+    background-color: lightcoral;
+}
+
+.indicator.fixed:hover ~ .boxes {
+    display: none;
 }

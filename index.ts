@@ -165,6 +165,10 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
     const indicatorDot = document.createElement("div");
     indicatorDot.classList.add("indicator-dot");
     indicator.appendChild(indicatorDot);
+
+    const indicatorText = document.createElement("div");
+    indicatorText.classList.add("indicator-text");
+    indicator.appendChild(indicatorText)
     
     boxes.parentElement.appendChild(indicator);
 
@@ -206,10 +210,10 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
                 block.appendChild(blockScore);
 
                 block.addEventListener("mousemove", event => {
-                    if (event.offsetY < 0 || event.offsetY > block.clientHeight) {
+                    if (event.offsetY < 0 || event.offsetY > block.clientHeight ||
+                        event.offsetX < 0 || event.offsetX > block.clientWidth) {
                         // Sometimes Chrome gives offsetY = -1
                         indicator.hidden = true;
-                        blockScore.hidden = true;
                         return;
                     }
                     const gradeBound = GRADE_SCORE[g];
@@ -222,28 +226,42 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
                     const indicatorBound = indicator.parentElement.getBoundingClientRect();
                     indicator.style.top = `${event.clientY - Math.round(indicatorBound.top)}px`;
                     indicatorDot.style.left = `${event.clientX - Math.round(indicatorBound.left)}px`;
-                    indicator.hidden = false;
 
-                    blockScoreText.textContent = `${(score/1000).toFixed(0)}k ${vf.toFixed(2)}`;
-                    blockScore.style.bottom = `${block.clientHeight - event.offsetY + 10}px`;
-                    if (event.clientX > visualizer.getBoundingClientRect().left + visualizer.clientWidth - blockScore.clientWidth - 4) {
+                    indicatorText.textContent = `${(score/1000).toFixed(0)}k ${vf.toFixed(2)}`;
+                    if (event.clientX > visualizer.getBoundingClientRect().left + visualizer.clientWidth - indicatorText.clientWidth - 4) {
                         tooltipRight = false;
                     }
-                    if (event.clientX < visualizer.getBoundingClientRect().left + rows.clientWidth + blockScore.clientWidth + 4) {
+                    if (event.clientX < visualizer.getBoundingClientRect().left + rows.clientWidth + indicatorText.clientWidth + 4) {
                         tooltipRight = true;
                     }
                     if (tooltipRight) {
-                        blockScore.style.left = `${event.offsetX + 2}px`
-                        blockScore.style.right = "";
+                        indicatorText.style.left = `${event.clientX - Math.round(indicatorBound.left) + 2}px`
+                        indicatorText.style.right = "";
                     } else {
-                        blockScore.style.left = "";
-                        blockScore.style.right = `${block.clientWidth - event.offsetX + 2}px`;
+                        indicatorText.style.left = "";
+                        indicatorText.style.right = `${Math.round(indicatorBound.right) - event.clientX + 2}px`;
                     }
-                    blockScore.hidden = false;
+
+                    indicator.hidden = false;
+                });
+                block.addEventListener("click", event => {
+                    for (let e of document.querySelectorAll(".fixed")) {
+                        e.remove();
+                    }
+                    const spacer = document.createElement("div");
+                    spacer.classList.add("puc-spacer");
+
+                    const indicatorFixed = indicator.cloneNode(true) as HTMLElement;
+                    indicatorFixed.classList.add("fixed");
+                    indicatorFixed.appendChild(spacer);
+
+                    indicator.parentElement.appendChild(indicatorFixed);
+                    indicatorFixed.addEventListener("click", () => {
+                        indicatorFixed.remove();
+                    });
                 });
                 block.addEventListener("mouseout", event => {
                     indicator.hidden = true;
-                    blockScore.hidden = true;
                 });
 
                 boxCol2.appendChild(block);
@@ -275,28 +293,41 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
                 indicator.style.top = `${block.offsetTop + boxes.offsetTop}px`;
                 const indicatorBound = indicator.parentElement.getBoundingClientRect();
                 indicatorDot.style.left = `${event.clientX - Math.round(indicatorBound.left)}px`;
-                indicator.hidden = false;
 
-                blockScoreText.textContent = `${vf.toFixed(2)}`;
-                blockScore.style.bottom = `calc(${block.clientHeight}px + 1.1em)`;
-                if (event.clientX > visualizer.getBoundingClientRect().left + visualizer.clientWidth - blockScore.clientWidth - 4) {
+                indicatorText.textContent = `${vf.toFixed(2)}`;
+                if (event.clientX > visualizer.getBoundingClientRect().left + visualizer.clientWidth - indicatorText.clientWidth - 4) {
                     tooltipRight = false;
                 }
-                if (event.clientX < visualizer.getBoundingClientRect().left + rows.clientWidth + blockScore.clientWidth + 4) {
+                if (event.clientX < visualizer.getBoundingClientRect().left + rows.clientWidth + indicatorText.clientWidth + 4) {
                     tooltipRight = true;
                 }
                 if (tooltipRight) {
-                    blockScore.style.left = `${event.offsetX + 2}px`
-                    blockScore.style.right = "";
+                    indicatorText.style.left = `${event.clientX - Math.round(indicatorBound.left) + 2}px`
+                    indicatorText.style.right = "";
                 } else {
-                    blockScore.style.left = "";
-                    blockScore.style.right = `${block.clientWidth - event.offsetX + 2}px`;
+                    indicatorText.style.left = "";
+                    indicatorText.style.right = `${Math.round(indicatorBound.right) - event.clientX + 2}px`;
                 }
-                blockScore.hidden = false;
+                indicator.hidden = false;
+            });
+            block.addEventListener("click", event => {
+                for (let e of document.querySelectorAll(".fixed")) {
+                    e.remove();
+                }
+                const spacer = document.createElement("div");
+                spacer.classList.add("puc-spacer");
+
+                const indicatorFixed = indicator.cloneNode(true) as HTMLElement;
+                indicatorFixed.classList.add("fixed");
+                indicatorFixed.appendChild(spacer);
+
+                indicator.parentElement.appendChild(indicatorFixed);
+                indicatorFixed.addEventListener("click", () => {
+                    indicatorFixed.remove();
+                });
             });
             block.addEventListener("mouseout", event => {
                 indicator.hidden = true;
-                blockScore.hidden = true;
             });
             boxCol.appendChild(block);
         }
