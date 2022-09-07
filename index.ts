@@ -273,6 +273,8 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
             block.addEventListener("mousemove", event => {
                 let vf = bound[1] * 50;
                 indicator.style.top = `${block.offsetTop + boxes.offsetTop}px`;
+                const indicatorBound = indicator.parentElement.getBoundingClientRect();
+                indicatorDot.style.left = `${event.clientX - Math.round(indicatorBound.left)}px`;
                 indicator.hidden = false;
 
                 blockScoreText.textContent = `${vf.toFixed(2)}`;
