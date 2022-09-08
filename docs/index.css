@@ -240,18 +240,18 @@ body {
 
 .indicator.fixed {
     z-index: 5;
-    border-color: red;
-    color: red;
+    border-color: crimson;
+    color: crimson;
     cursor: pointer;
 }
 
 .indicator.fixed .indicator-dot {
-    background-color: red;
+    background-color: crimson;
     pointer-events: all;
 }
 
 .indicator.fixed .indicator-text {
-    color: red;
+    color: crimson;
     pointer-events: all;
 }
 
