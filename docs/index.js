@@ -201,6 +201,8 @@ function draw_visualizer(minLvl, maxLvl) {
                     indicator.style.top = `${event.clientY - Math.round(indicatorBound.top)}px`;
                     indicatorDot.style.left = `${event.clientX - Math.round(indicatorBound.left)}px`;
                     indicatorText.textContent = `${(score / 1000).toFixed(0)}k ${vf.toFixed(2)}`;
+                    // Need to show the indicator to get the text size.
+                    indicator.hidden = false;
                     if (event.clientX > visualizer.getBoundingClientRect().left + visualizer.clientWidth - indicatorText.clientWidth - 4) {
                         tooltipRight = false;
                     }
@@ -215,7 +217,6 @@ function draw_visualizer(minLvl, maxLvl) {
                         indicatorText.style.left = "";
                         indicatorText.style.right = `${Math.round(indicatorBound.right) - event.clientX + 2}px`;
                     }
-                    indicator.hidden = false;
                 });
                 block.addEventListener("click", event => {
                     for (let e of document.querySelectorAll(".fixed")) {
@@ -264,6 +265,8 @@ function draw_visualizer(minLvl, maxLvl) {
                 const indicatorBound = indicator.parentElement.getBoundingClientRect();
                 indicatorDot.style.left = `${event.clientX - Math.round(indicatorBound.left)}px`;
                 indicatorText.textContent = `${vf.toFixed(2)}`;
+                // Need to show the indicator to get the text size.
+                indicator.hidden = false;
                 if (event.clientX > visualizer.getBoundingClientRect().left + visualizer.clientWidth - indicatorText.clientWidth - 4) {
                     tooltipRight = false;
                 }
