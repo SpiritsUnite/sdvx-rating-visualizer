@@ -329,6 +329,7 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
                 indicatorFixed.addEventListener("click", () => {
                     indicatorFixed.remove();
                 });
+                indicator.hidden = true;
             });
             block.addEventListener("mouseout", event => {
                 indicator.hidden = true;
