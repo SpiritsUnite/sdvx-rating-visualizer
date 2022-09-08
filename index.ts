@@ -144,8 +144,8 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
             bs[m] = GRADES.reduce((o, g) => {
                 let mult = lv * GRADE_MULT[g] * MEDAL_MULT[m] * 2;
                 o[g] = [mult * GRADE_SCORE[g][0], mult * GRADE_SCORE[g][1]]
-                o[g][0] = Math.trunc(o[g][0] * 10 + Number.EPSILON) / 100000;
-                o[g][1] = Math.trunc(o[g][1] * 10 + Number.EPSILON) / 100000;
+                o[g][0] = Math.trunc(o[g][0] / 10 + Number.EPSILON) / 1000;
+                o[g][1] = Math.trunc(o[g][1] / 10 + Number.EPSILON) / 1000;
                 return o;
             }, {} as Record<Grade, Bound>);
             return bs;
@@ -216,12 +216,15 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
                         indicator.hidden = true;
                         return;
                     }
+                    const ratio = 1 - (event.offsetY+1)/block.clientHeight;
+
                     const gradeBound = GRADE_SCORE[g];
-                    let score = gradeBound[1] -
-                        (gradeBound[1] - gradeBound[0])*(event.offsetY+1)/block.clientHeight;
-                    let vf = lv * score * GRADE_MULT[g] * MEDAL_MULT[m] * 2;
+                    let score = gradeBound[0] + (gradeBound[1] - gradeBound[0])*ratio;
                     score = score*100000;
-                    vf = vf*50/10000;
+                    
+                    const vfBound = bounds[lv][m][g];
+                    let vf = vfBound[0] + (vfBound[1] - vfBound[0])*ratio;
+                    vf = vf*50;
                     
                     const indicatorBound = indicator.parentElement.getBoundingClientRect();
                     indicator.style.top = `${event.clientY - Math.round(indicatorBound.top)}px`;
