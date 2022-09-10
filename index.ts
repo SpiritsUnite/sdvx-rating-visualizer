@@ -151,7 +151,7 @@ function draw_visualizer(minLvl: number, maxLvl: number): void {
             return bs;
         }, {} as Record<Medal, Record<Grade, Bound>>);
     }
-    const maxVf = Math.ceil(bounds[maxLvl]["PUC"]["S"][1] * 50 / VF_INTERVAL) * VF_INTERVAL;
+    const maxVf = (Math.floor(bounds[maxLvl]["PUC"]["S"][1] * 50 / VF_INTERVAL) + 1) * VF_INTERVAL;
 
     const cols = draw_cols(minLvl, maxLvl);
     const rows = draw_rows(maxVf);
